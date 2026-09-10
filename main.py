@@ -44,15 +44,8 @@ def controller(x):
     """
     BIG IDEA: need to check where the car is and how fast it going, and then determine
     how the car should accelerate and how much to turn the steering wheel
-
-    Notes:
-    -- using current state --> we need use the centerline and heading of the car to determine
-    the error and where we want to go on the centerline to create some derivative
-    -- Jaden hint: do centerline on the whole length (0-105) and use all the x and y coords
-    with cubic spline to separate functions? kinda
-    -- need to make a function that takes in a x and y coordinate and returns the closest centerline position from 0 to 105
-
     """
+    # lines 49 - 59
     nearest = reverse_centerline(xpos, ypos)    # takes the current x and y positions and finds where on the centerline it is
     spline_x_derivative = spline_x.derivative() # these derivatives will help me know what way the track is pointin
     spline_y_derivative = spline_y.derivative()
@@ -66,6 +59,7 @@ def controller(x):
     heading_error = np.mod((heading_error + np.pi), 2*np.pi) - np.pi
 
 
+    # lines 63 - 
     target_velocity = 2
     speed_error = target_velocity - v       # positive error = more accel, negative error = less accel/brake
     speed_gain = 1
@@ -73,14 +67,33 @@ def controller(x):
     requested_accel = speed_gain * speed_error
     bounded_accel = np.clip(requested_accel, -10, 4)
 
+    #heading_gain = 1
+    #steering_gain = 2
+    #requested_theta = heading_error * heading_gain
+    #bounded_theta = np.clip(requested_theta, -0.7, 0.7)
+    #theta_error = bounded_theta - theta
+    #requested_steering_rate = steering_gain * theta_error
+    #bounded_steering_rate = np.clip(requested_steering_rate, -1, 1)
+
+
+    ref_point_x = spline_x(nearest) # ref points coords
+    ref_point_y = spline_y(nearest)
+
+    delta_x = ref_point_x - xpos    # displacement
+    delta_y = ref_point_y - ypos
+
+    cross_track_error = (-delta_x * np.sin(track_heading) + delta_y * np.cos(track_heading))
+
     heading_gain = 1
+    cross_track_gain = 0.1
     steering_gain = 2
-    requested_theta = steering_gain * heading_gain
+
+    requested_theta = (heading_gain * heading_error + cross_track_gain * cross_track_error)
     bounded_theta = np.clip(requested_theta, -0.7, 0.7)
+
     theta_error = bounded_theta - theta
     requested_steering_rate = steering_gain * theta_error
     bounded_steering_rate = np.clip(requested_steering_rate, -1, 1)
-
     """
     we are going to return two things:
     a - how much should the car accelerate or deccelerate
