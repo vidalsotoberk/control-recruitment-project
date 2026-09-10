@@ -59,7 +59,7 @@ def controller(x):
 
 
     # lines 62 - 67 take car of controlling speed
-    target_velocity = 5
+    target_velocity = 6.5
     speed_error = target_velocity - v       # positive error = more accel, negative error = less accel/brake
     speed_gain = 1
 
