@@ -1,7 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # unneeded i think
 from scipy.interpolate import CubicSpline
-import math # for pure pursuit?
+import math
 from simulator import Simulator, centerline
 
 sim = Simulator()
@@ -40,6 +40,7 @@ def controller(x):
     theta   = x[4]                  # current steering angle
 
     ... # YOUR CODE HERE
+    
     """
     BIG IDEA: need to check where the car is and how fast it going, and then determine
     how the car should accelerate and how much to turn the steering wheel
@@ -52,17 +53,44 @@ def controller(x):
     -- need to make a function that takes in a x and y coordinate and returns the closest centerline position from 0 to 105
 
     """
+    nearest = reverse_centerline(xpos, ypos)    # takes the current x and y positions and finds where on the centerline it is
+    spline_x_derivative = spline_x.derivative() # these derivatives will help me know what way the track is pointin
+    spline_y_derivative = spline_y.derivative()
 
+    der_x_evaluation = spline_x_derivative(nearest)   
+    der_y_evaluation = spline_y_derivative(nearest)
+
+    track_heading = math.atan2(der_y_evaluation, der_x_evaluation)  # atan2 gives me the heading angle 
+
+    heading_error = track_heading - phi
+    heading_error = np.mod((heading_error + np.pi), 2*np.pi) - np.pi
+
+
+    target_velocity = 2
+    speed_error = target_velocity - v       # positive error = more accel, negative error = less accel/brake
+    speed_gain = 1
+
+    requested_accel = speed_gain * speed_error
+    bounded_accel = np.clip(requested_accel, -10, 4)
+
+    heading_gain = 1
+    steering_gain = 2
+    requested_theta = steering_gain * heading_gain
+    bounded_theta = np.clip(requested_theta, -0.7, 0.7)
+    theta_error = bounded_theta - theta
+    requested_steering_rate = steering_gain * theta_error
+    bounded_steering_rate = np.clip(requested_steering_rate, -1, 1)
 
     """
     we are going to return two things:
     a - how much should the car accelerate or deccelerate
     theta - turning left or right
     """
-    return np.array([0,0])
+    return np.array([bounded_accel, bounded_steering_rate])
 
 def reverse_centerline(x, y):
     """takes in some x and y coordinate and returns the closest centerline position"""
+
     shortest_distance = np.inf #infinity so anything will beat it at first
     for i in range(0 , len(s_values)):
         corresponding_x = centerline_x[i]
