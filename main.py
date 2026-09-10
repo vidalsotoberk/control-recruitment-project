@@ -10,8 +10,8 @@ centerline_x = []
 centerline_y = []
 s_values = []
 
-for i in range(0, 105):
-    s_values.append(i)  # fills s_values with values from 0-104
+for i in np.arange(0, 105, 0.5):
+    s_values.append(i)  # fills s_values with values from 0-104.5 in intervals of 0.5
 
 for s in s_values:  # gets the pairs of x and y coords for each centerline(s) and separates them
     xy_coord = []
@@ -59,7 +59,7 @@ def controller(x):
 
 
     # lines 62 - 67 take car of controlling speed
-    target_velocity = 6
+    target_velocity = 5
     speed_error = target_velocity - v       # positive error = more accel, negative error = less accel/brake
     speed_gain = 1
 
@@ -77,7 +77,7 @@ def controller(x):
 
     heading_gain = 1
     centerline_tracking_gain = 0.1
-    steering_gain = 2
+    steering_gain = 4
 
     requested_theta = (heading_gain * heading_error + centerline_tracking_gain * centerline_tracking_error) #i combine heading correction and lateral correction to get the desired wheel angle
     bounded_theta = np.clip(requested_theta, -0.7, 0.7) # bounded
