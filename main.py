@@ -46,19 +46,16 @@ def controller(x):
     BIG IDEA: need to check where the car is and how fast it going, and then determine
     how the car should accelerate and how much to turn the steering wheel
     """
-    # lines 49 - 59
+    # lines 50 - 56 get the closest centerline position to the car and calculate the heading error
     nearest = reverse_centerline(xpos, ypos)    # takes the current x and y positions and finds where on the centerline it is
-
     der_x_evaluation = spline_x_derivative(nearest)   
     der_y_evaluation = spline_y_derivative(nearest)
 
     track_heading = math.atan2(der_y_evaluation, der_x_evaluation)  # atan2 gives me the heading angle 
-
     heading_error = track_heading - phi
     heading_error = np.mod((heading_error + np.pi), 2*np.pi) - np.pi
 
-
-    # lines 62 - 67 take car of controlling speed
+    # lines 58 - 64 take car of controlling speed
     target_velocity = 6.5
     speed_error = target_velocity - v       # positive error = more accel, negative error = less accel/brake
     speed_gain = 1
@@ -66,7 +63,7 @@ def controller(x):
     requested_accel = speed_gain * speed_error
     bounded_accel = np.clip(requested_accel, -10, 4)    #np.clip takes care of the bounds for me
 
-    # lines 78 - 95 take care of telling how far the car is from the centerline and how the car should steer to get closer to it
+    # lines 66 - 84 take care of telling how far the car is from the centerline and how the car should steer to get closer to it
     ref_point_x = spline_x(nearest) # ref coords for nearest centerline - WHERE I WANT TO GO
     ref_point_y = spline_y(nearest) # same thing but y
 
