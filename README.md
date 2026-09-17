@@ -1,6 +1,6 @@
 
 
-# FEB Autonomous Recruitment Project
+# FEB Autonomous Project
 
 The goal of this project is to design and implement something to drive a car around a track while avoiding cones.
 
@@ -104,18 +104,6 @@ I'm not sure if `sim.animate()` will work in colab, but if it doesn't, you can j
 
 
 
-## Presentation & Submission
-
-When you present your project, you will have roughly 10-15 minutes to showcase everything you've done (please do not show us anything not directly related to this project). The goal is to show:
-- *why* you did what you did
-    - how you made sure your controller is safe (won't hit any cones or exceed the acceleration limits)
-    - what things you optimized for & why you think your controller is the right choice given those priorities
-- what you learned
-- what problems you encountered and how you solved them
-
-Whatever medium you think is best for this is fine; we're not particularly concerned about your graphic design or presentation skills beyond what is needed to communicate the core ideas here.
-
-You will also submit a zip file of your finalized code.
 
 ## Resources
 outside of [office hours](https://docs.google.com/spreadsheets/d/1B-L8bMBI9LduR22nH3wqY7b9pkvPdJxPRgXONi-lw7A/edit?gid=1214868707#gid=1214868707), here are a couple resources to give various bits of background on controls:
